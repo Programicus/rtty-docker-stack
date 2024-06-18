@@ -10,7 +10,10 @@ if [[ -z $RASPBERRY_IP  ]] || [[ -z $RASPBERRY_UNAME ]] ; then
 	findpi
 fi
 
+rsync -az --delete ${RASPBERRY_UNAME}@${RASPBERRY_IP}:~/node_red/data ./
 rsync -az --delete --exclude='.git/' --exclude='sync-and-test.sh' . ${RASPBERRY_UNAME}@${RASPBERRY_IP}:~/node_red
+rsync -az --delete --exclude='data/' --exclude='.git/' --exclude='sync-and-test.sh' . ${RASPBERRY_UNAME}@${RASPBERRY_IP}:~/node_red
+
 function remote() {
 	ssh ${RASPBERRY_UNAME}@${RASPBERRY_IP} "cd node_red;${*}"
 }
