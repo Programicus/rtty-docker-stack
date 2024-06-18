@@ -1,0 +1,3 @@
+[submodule "pyrtty"]
+	path = pyrtty
+	url = https://github.com/Programicus/pyrtty.git
