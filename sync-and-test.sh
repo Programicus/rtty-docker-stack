@@ -10,6 +10,12 @@ if [[ -z $RASPBERRY_IP  ]] || [[ -z $RASPBERRY_UNAME ]] ; then
 	findpi
 fi
 
+rsync -az --delete --exclude='.git/' --exclude='sync-and-test.sh' . ${RASPBERRY_UNAME}@${RASPBERRY_IP}:~/node_red
 function remote() {
 	ssh ${RASPBERRY_UNAME}@${RASPBERRY_IP} "cd node_red;${*}"
 }
+
+
+remote docker-compose down
+remote docker-compose build
+(remote docker-compose up) & (sleep 10s; xdg-open "http://${RASPBERRY_IP}:1880")

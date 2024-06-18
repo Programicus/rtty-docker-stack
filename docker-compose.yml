@@ -1,0 +1,5 @@
+services:
+  nodered:
+    build: .
+    ports:
+      - "1880:1880"
