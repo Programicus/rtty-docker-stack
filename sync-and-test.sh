@@ -19,6 +19,6 @@ function remote() {
 }
 
 
-remote docker-compose down
-remote docker-compose build
-(remote docker-compose up) & (sleep 10s; xdg-open "http://${RASPBERRY_IP}:1880")
+remote docker compose down
+remote docker compose build
+(remote docker compose up) & (sleep 10s; xdg-open "http://${RASPBERRY_IP}:1880")
