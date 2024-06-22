@@ -1,0 +1,129 @@
+[
+    {
+        "id": "014a1a96b302a816",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b7f1946e3c34936f",
+        "type": "e-mail in",
+        "z": "014a1a96b302a816",
+        "name": "",
+        "protocol": "IMAP",
+        "server": "imap.gmail.com",
+        "useSSL": true,
+        "autotls": "never",
+        "port": "993",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "box": "INBOX",
+        "disposition": "Read",
+        "criteria": "UNSEEN",
+        "repeat": "15",
+        "fetch": "auto",
+        "inputs": 0,
+        "x": 250,
+        "y": 380,
+        "wires": [
+            [
+                "d296bbee314d5fd3",
+                "2fd719a9ebf617ec"
+            ]
+        ]
+    },
+    {
+        "id": "d296bbee314d5fd3",
+        "type": "debug",
+        "z": "014a1a96b302a816",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "2fd719a9ebf617ec",
+        "type": "exec",
+        "z": "014a1a96b302a816",
+        "command": "/pyrtty/pyrtty.py ",
+        "addpay": "",
+        "append": "--write \"/data/{msg.from}.{msg.topic}.{msg.date}.wav\" {msg.payload}",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 500,
+        "y": 400,
+        "wires": [
+            [
+                "7a2022b05a0a2ec5"
+            ],
+            [
+                "318bcdc6870f0c4d"
+            ],
+            [
+                "de2d8b5daffe3118"
+            ]
+        ]
+    },
+    {
+        "id": "7a2022b05a0a2ec5",
+        "type": "debug",
+        "z": "014a1a96b302a816",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "318bcdc6870f0c4d",
+        "type": "debug",
+        "z": "014a1a96b302a816",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "de2d8b5daffe3118",
+        "type": "debug",
+        "z": "014a1a96b302a816",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 440,
+        "wires": []
+    }
+]
