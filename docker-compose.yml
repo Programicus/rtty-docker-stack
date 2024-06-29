@@ -1,7 +1,11 @@
 services:
   nodered:
-    build: .
+    build:
+      additional_contexts:
+        hostetc: /etc
     ports:
       - "1880:1880"
     volumes:
       - ./data:/data
+    devices:
+      - /dev/snd:/dev/snd
