@@ -2,10 +2,35 @@
     {
         "id": "014a1a96b302a816",
         "type": "tab",
-        "label": "Flow 1",
+        "label": "Gen save_msg",
         "disabled": false,
-        "info": "",
+        "info": "Given an imput (dummy or from email), generate and save out a save_msg file",
         "env": []
+    },
+    {
+        "id": "c2dc4ab21e48cf2f",
+        "type": "junction",
+        "z": "014a1a96b302a816",
+        "x": 500,
+        "y": 420,
+        "wires": [
+            [
+                "00adaad1c3d251bd",
+                "d296bbee314d5fd3"
+            ]
+        ]
+    },
+    {
+        "id": "e82451dc738629f8",
+        "type": "junction",
+        "z": "014a1a96b302a816",
+        "x": 420,
+        "y": 500,
+        "wires": [
+            [
+                "c2dc4ab21e48cf2f"
+            ]
+        ]
     },
     {
         "id": "b7f1946e3c34936f",
@@ -23,15 +48,59 @@
         "box": "INBOX",
         "disposition": "Read",
         "criteria": "UNSEEN",
-        "repeat": "15",
-        "fetch": "auto",
-        "inputs": 0,
-        "x": 250,
-        "y": 380,
+        "repeat": "60",
+        "fetch": "trigger",
+        "inputs": 1,
+        "x": 370,
+        "y": 340,
         "wires": [
             [
-                "d296bbee314d5fd3",
-                "2fd719a9ebf617ec"
+                "c2dc4ab21e48cf2f"
+            ]
+        ]
+    },
+    {
+        "id": "f05a01553ec86250",
+        "type": "debug",
+        "z": "014a1a96b302a816",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "00adaad1c3d251bd",
+        "type": "change",
+        "z": "014a1a96b302a816",
+        "name": "Gen save_msg file path",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pathToFile",
+                "pt": "msg",
+                "to": "\"/data/msgs/\" & msg.date & \".\" & msg.from & \".saved_msg\"",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 520,
+        "wires": [
+            [
+                "c5e8a88d9e18cecb",
+                "f05a01553ec86250"
             ]
         ]
     },
@@ -41,89 +110,120 @@
         "z": "014a1a96b302a816",
         "name": "debug 1",
         "active": true,
-        "tosidebar": true,
+        "tosidebar": false,
         "console": false,
         "tostatus": false,
         "complete": "true",
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 480,
-        "y": 340,
+        "x": 660,
+        "y": 420,
         "wires": []
     },
     {
-        "id": "2fd719a9ebf617ec",
-        "type": "exec",
+        "id": "f7fa6c614feea372",
+        "type": "inject",
         "z": "014a1a96b302a816",
-        "command": "/pyrtty/pyrtty.py ",
-        "addpay": "",
-        "append": "--write \"/data/{msg.from}.{msg.topic}.{msg.date}.wav\" {msg.payload}",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "",
-        "x": 500,
-        "y": 400,
+        "name": "Inject dummy message for testing",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "date",
+                "v": "iso",
+                "vt": "date"
+            },
+            {
+                "p": "html",
+                "v": "<div dir=\"ltr\">this is a test of the node-red code</div>",
+                "vt": "str"
+            },
+            {
+                "p": "from",
+                "v": "jmiller@labattleship.com",
+                "vt": "str"
+            },
+            {
+                "p": "attachments",
+                "v": "[]",
+                "vt": "json"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test",
+        "payload": "this is a test of the node-red code",
+        "payloadType": "str",
+        "x": 170,
+        "y": 500,
         "wires": [
             [
-                "7a2022b05a0a2ec5"
-            ],
-            [
-                "318bcdc6870f0c4d"
-            ],
-            [
-                "de2d8b5daffe3118"
+                "e82451dc738629f8"
             ]
         ]
     },
     {
-        "id": "7a2022b05a0a2ec5",
-        "type": "debug",
+        "id": "c5e8a88d9e18cecb",
+        "type": "file",
         "z": "014a1a96b302a816",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 740,
-        "y": 360,
-        "wires": []
+        "name": "",
+        "filename": "pathToFile",
+        "filenameType": "msg",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 940,
+        "y": 640,
+        "wires": [
+            [
+                "1563065ffcb81104"
+            ]
+        ]
     },
     {
-        "id": "318bcdc6870f0c4d",
-        "type": "debug",
+        "id": "3e76bf971a21b46f",
+        "type": "inject",
         "z": "014a1a96b302a816",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 740,
-        "y": 400,
-        "wires": []
+        "name": "Email check timer",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 340,
+        "wires": [
+            [
+                "b7f1946e3c34936f"
+            ]
+        ],
+        "icon": "font-awesome/fa-clock-o"
     },
     {
-        "id": "de2d8b5daffe3118",
+        "id": "1563065ffcb81104",
         "type": "debug",
         "z": "014a1a96b302a816",
-        "name": "debug 4",
+        "name": "debug 6",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "pathToFile",
+        "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 740,
-        "y": 440,
+        "x": 1120,
+        "y": 640,
         "wires": []
     }
 ]
