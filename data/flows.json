@@ -86,7 +86,7 @@
                 "t": "set",
                 "p": "pathToFile",
                 "pt": "msg",
-                "to": "\"/data/msgs/\" & msg.date & \".\" & msg.from & \".saved_msg\"",
+                "to": "\"/data/msgs/pending/\" & msg.date & \".\" & msg.from & \".saved_msg\"",
                 "tot": "jsonata"
             }
         ],
