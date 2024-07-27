@@ -1,4 +1,15 @@
 services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-defaultuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-defaultdatabase}
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - backend
+
   nodered:
     build:
       additional_contexts:
@@ -9,3 +20,9 @@ services:
       - ./data:/data
     devices:
       - /dev/snd:/dev/snd
+    networks:
+      - frontend
+
+networks:
+  frontend:
+  backend:
