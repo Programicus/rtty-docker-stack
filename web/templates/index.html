@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queue Entries</title>
+</head>
+<body>
+  <h1>Queue Entries</h1>
+  <form action="{{ url_for('debug') }}" method="post">
+    <label for="source">Source:</label>
+    <input type="text" id="source" name="source" required>
+    <label for="message">Message:</label>
+    <input type="text" id="message" name="message" required>
+    <button type="submit">Add Entry</button>
+  </form>
+  <br>
+  <form method="post">
+    <label>
+      <input type="checkbox" name="show_finished" {% if show_finished %}checked{% endif %}> Show Finished
+    </label>
+    <label>
+      <input type="checkbox" name="show_printing" {% if show_printing %}checked{% endif %}> Show Printing
+    </label>
+    <label>
+      <input type="checkbox" name="show_queued" {% if show_queued %}checked{% endif %}> Show Queued
+    </label>
+    <button type="submit">Filter</button>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Source</th>
+        <th>Message</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ entry[0] }}</td>
+        <td>{{ entry[1] }}</td>
+        <td>{{ entry[2] }}</td>
+        <td>{{ entry[3] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

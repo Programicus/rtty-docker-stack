@@ -22,7 +22,7 @@ services:
     networks:
       - backend
 
-  nodered:
+  node-red:
     build:
       additional_contexts:
         hostetc: /etc
@@ -34,6 +34,22 @@ services:
       - /dev/snd:/dev/snd
     networks:
       - frontend
+
+  web:
+    build:
+      context: ./web
+      args:
+        POSTGRES_USER: ${POSTGRES_USER:-defaultuser}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
+        POSTGRES_DB: ${POSTGRES_DB:-defaultdatabase}
+    ports:
+      - "80:80"
+    depends_on:
+      - node-red
+      - db
+    networks:
+      - frontend
+      - backend
 
 networks:
   frontend:

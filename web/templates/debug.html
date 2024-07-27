@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Queue Entry</title>
+</head>
+<body>
+  <h1>Add Queue Entry</h1>
+  <form action="{{ url_for('debug') }}" method="post">
+    <label for="source">Source:</label>
+    <input type="text" id="source" name="source" required>
+    <label for="message">Message:</label>
+    <input type="text" id="message" name="message" required>
+    <button type="submit">Add Entry</button>
+  </form>
+</body>
+</html>
