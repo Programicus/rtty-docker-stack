@@ -71,7 +71,13 @@ async def main():
             password=password,
             database=database,
             host='db',
+            loop=loop
         )
+    except Exception as e:
+        logger.error(f'Failed to connect to db {e}')
+        return
+
+    try:
         logger.info('connection created')
 
         await conn.execute("""
