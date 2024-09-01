@@ -4,12 +4,24 @@ import signal
 import asyncpg
 import interop
 
+import logging
+
+FORMAT = '%(asctime)s %(message)s'
+logging.basicConfig(level=logging.INFO, format=FORMAT)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 async def listen_for_notifications(conn, queued_count):
     def increment_queued_count(*args):
         nonlocal queued_count
+        old_count = queued_count
         queued_count += 1
+        logger.info(f'raising queued_count from {old_count} to {queued_count}')
 
+    logger.info('about to create listener')
     await conn.add_listener('new_queue_entry', increment_queued_count)
+    logger.info('created listener')
 
 async def process_existing_pending(conn, lock):
     async with conn.transaction():
@@ -32,6 +44,7 @@ async def process_existing_pending(conn, lock):
     return queued_count
 
 async def process_row(conn, lock):
+    logger.info('process_row')
     async with conn.transaction():
         row = await conn.fetchrow("""
             SELECT * FROM Queue
@@ -45,13 +58,21 @@ async def process_row(conn, lock):
             await do_some.work(conn, row, lock)
 
 async def main():
+    logger.info('starting worker')
     try:
+        user = os.environ.get('POSTGRES_USER', 'defaultuser')
+        password = os.environ.get('POSTGRES_PASSWORD', 'defaultpassword')
+        database = os.environ.get('POSTGRES_DB', 'defaultdatabase')
+        logger.info(f'connecting to {database} with user {user}')
+        logger.debug(f'with password {password}') #if you are can see this log message then you already have access to the docker container
+        logger.info('starting delay waiting for pg to be ready')
         conn = await asyncpg.connect(
-            user=os.environ.get('POSTGRES_USER', 'defaultuser'),
-            password=os.environ.get('POSTGRES_PASSWORD', 'defaultpassword'),
-            database=os.environ.get('POSTGRES_DB', 'defaultdatabase'),
-            host='db'
+            user=user,
+            password=password,
+            database=database,
+            host='db',
         )
+        logger.info('connection created')
 
         await conn.execute("""
             PREPARE mark_done AS
@@ -67,12 +88,14 @@ async def main():
             WHERE timestamp = $1
         """)
 
+        logger.info('created prepared statements')
+
         # Create a lock to ensure only one process_row runs at a time
         lock = asyncio.Lock()
 
         # First handle existing pending rows and get the count of queued rows
         queued_count = await process_existing_pending(conn, lock)
-        print(f"Number of rows marked as QUEUED: {queued_count}")
+        logger.info(f"Number of rows marked as QUEUED: {queued_count}")
 
 
         # Then set up the listener for new rows
@@ -85,13 +108,13 @@ async def main():
             else:
                 await asyncio.sleep(1)
     except asyncio.CancelledError:
-        print("Worker has been cancelled")
+        logger.warn("Worker has been cancelled")
     finally:
         await conn.close()
-        print("Worker has shut down gracefully")
+        logger.info("Worker has shut down gracefully")
 
 def shutdown(loop):
-    print("Received shutdown signal")
+    logger.info("Received shutdown signal")
     for task in asyncio.all_tasks(loop):
         task.cancel()
     loop.stop()
