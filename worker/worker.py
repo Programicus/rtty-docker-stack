@@ -12,9 +12,11 @@ logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+queued_count = 0
+
 async def listen_for_notifications(conn, queued_count):
     def increment_queued_count(*args):
-        nonlocal queued_count
+        global queued_count
         old_count = queued_count
         queued_count += 1
         logger.info(f'raising queued_count from {old_count} to {queued_count}')
@@ -105,6 +107,7 @@ async def main():
         lock = asyncio.Lock()
 
         # First handle existing pending rows and get the count of queued rows
+        global queued_count
         queued_count = await process_existing_pending(conn, lock)
         logger.info(f"Number of rows marked as QUEUED: {queued_count}")
 
