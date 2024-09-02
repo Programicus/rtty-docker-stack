@@ -66,13 +66,6 @@ async def main():
         password = os.environ.get('POSTGRES_PASSWORD', 'defaultpassword')
         database = os.environ.get('POSTGRES_DB', 'defaultdatabase')
         logger.info(f'connecting to {database} with user {user}')
-        logger.debug(f'with password {password}') #if you are can see this log message then you already have access to the docker container
-        
-        #HACKY:add delay for pg to finish spinning up
-        #TODO: find a better way
-        logger.info('starting delay waiting for pg to be ready')
-        await asyncio.sleep(15)
-        
         conn = await asyncpg.connect(
             user=user,
             password=password,
