@@ -57,7 +57,7 @@ async def process_row(conn, lock):
         """)
 
         if row:
-            await do_some.work(conn, row, lock)
+            await interop.process_row(conn, row, lock)
 
 async def main():
     logger.info('starting worker')
@@ -66,6 +66,7 @@ async def main():
         password = os.environ.get('POSTGRES_PASSWORD', 'defaultpassword')
         database = os.environ.get('POSTGRES_DB', 'defaultdatabase')
         logger.info(f'connecting to {database} with user {user}')
+
         conn = await asyncpg.connect(
             user=user,
             password=password,
@@ -80,19 +81,7 @@ async def main():
     try:
         logger.info('connection created')
 
-        await conn.execute("""
-            PREPARE mark_done AS
-            UPDATE Queue
-            SET status = 'FINISHED'
-            WHERE timestamp = $1
-        """)
-
-        await conn.execute("""
-            PREPARE mark_printing AS
-            UPDATE Queue
-            SET status = 'PRINTING'
-            WHERE timestamp = $1
-        """)
+        await interop.prepare_statements(conn)
 
         logger.info('created prepared statements')
 
