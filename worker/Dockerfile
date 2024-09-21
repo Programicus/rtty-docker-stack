@@ -20,7 +20,6 @@ COPY requirements.txt requirements.txt
 RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
 
 ADD pyrtty /pyrtty
-RUN pip install scipy==1.13.1 --break-system-packages #Run as a seperate layer as this take forever, caching it is pretty good
 RUN pip install --break-system-packages -r /pyrtty/requirements.txt
 
 COPY . .

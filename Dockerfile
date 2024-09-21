@@ -10,14 +10,6 @@ USER root
 
 RUN apk add py3-pip python3-dev libffi libffi-dev gfortran openblas openblas-dev musl-dev portaudio
 
-USER node-red
-
-ADD worker/pyrtty /pyrtty
-RUN pip install scipy --break-system-packages #Run as a seperate layer as this take forever, caching it is pretty good
-RUN pip install --break-system-packages -r /pyrtty/requirements.txt
-
-USER root
-
 COPY --from=hostetc group /tmp/group
 RUN echo '#!/bin/sh' > /tmp/setup_audio_group.sh \
     && echo 'host_audio_gid=$(grep "^audio:" /tmp/group | cut -d: -f3)' >> /tmp/setup_audio_group.sh \
