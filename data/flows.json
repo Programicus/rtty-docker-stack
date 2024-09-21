@@ -2,21 +2,21 @@
     {
         "id": "014a1a96b302a816",
         "type": "tab",
-        "label": "Gen save_msg",
+        "label": "Poll email accounts",
         "disabled": false,
-        "info": "Given an imput (dummy or from email), generate and save out a save_msg file",
+        "info": "Periodically check for an email and inject into the queue",
         "env": []
     },
     {
         "id": "c2dc4ab21e48cf2f",
         "type": "junction",
         "z": "014a1a96b302a816",
-        "x": 500,
+        "x": 920,
         "y": 420,
         "wires": [
             [
-                "00adaad1c3d251bd",
-                "d296bbee314d5fd3"
+                "d296bbee314d5fd3",
+                "3a206627d89b71e0"
             ]
         ]
     },
@@ -24,8 +24,8 @@
         "id": "e82451dc738629f8",
         "type": "junction",
         "z": "014a1a96b302a816",
-        "x": 420,
-        "y": 500,
+        "x": 840,
+        "y": 620,
         "wires": [
             [
                 "c2dc4ab21e48cf2f"
@@ -33,10 +33,47 @@
         ]
     },
     {
+        "id": "fbd8a70d937ba280",
+        "type": "junction",
+        "z": "014a1a96b302a816",
+        "x": 300,
+        "y": 420,
+        "wires": [
+            [
+                "b7f1946e3c34936f"
+            ]
+        ]
+    },
+    {
+        "id": "f6f7d7105f5398c6",
+        "type": "postgreSQLConfig",
+        "name": "db connection",
+        "host": "db",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "POSTGRES_DB",
+        "databaseFieldType": "env",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "POSTGRES_USER",
+        "userFieldType": "env",
+        "password": "POSTGRES_PASSWORD",
+        "passwordFieldType": "env"
+    },
+    {
         "id": "b7f1946e3c34936f",
         "type": "e-mail in",
         "z": "014a1a96b302a816",
-        "name": "",
+        "name": "Test Email",
         "protocol": "IMAP",
         "server": "imap.gmail.com",
         "useSSL": true,
@@ -51,56 +88,11 @@
         "repeat": "60",
         "fetch": "trigger",
         "inputs": 1,
-        "x": 370,
-        "y": 340,
+        "x": 480,
+        "y": 420,
         "wires": [
             [
-                "c2dc4ab21e48cf2f"
-            ]
-        ]
-    },
-    {
-        "id": "f05a01553ec86250",
-        "type": "debug",
-        "z": "014a1a96b302a816",
-        "name": "debug 5",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1120,
-        "y": 520,
-        "wires": []
-    },
-    {
-        "id": "00adaad1c3d251bd",
-        "type": "change",
-        "z": "014a1a96b302a816",
-        "name": "Gen save_msg file path",
-        "rules": [
-            {
-                "t": "set",
-                "p": "pathToFile",
-                "pt": "msg",
-                "to": "\"/data/msgs/pending/\" & msg.date & \".\" & msg.from & \".saved_msg\"",
-                "tot": "jsonata"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 690,
-        "y": 520,
-        "wires": [
-            [
-                "c5e8a88d9e18cecb",
-                "f05a01553ec86250"
+                "b9fdfac45f583858"
             ]
         ]
     },
@@ -117,8 +109,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 660,
-        "y": 420,
+        "x": 1080,
+        "y": 320,
         "wires": []
     },
     {
@@ -153,6 +145,11 @@
                 "p": "attachments",
                 "v": "[]",
                 "vt": "json"
+            },
+            {
+                "p": "src",
+                "v": "debug_trigger",
+                "vt": "str"
             }
         ],
         "repeat": "",
@@ -163,29 +160,10 @@
         "payload": "this is a test of the node-red code",
         "payloadType": "str",
         "x": 170,
-        "y": 500,
+        "y": 620,
         "wires": [
             [
                 "e82451dc738629f8"
-            ]
-        ]
-    },
-    {
-        "id": "c5e8a88d9e18cecb",
-        "type": "file",
-        "z": "014a1a96b302a816",
-        "name": "",
-        "filename": "pathToFile",
-        "filenameType": "msg",
-        "appendNewline": true,
-        "createDir": true,
-        "overwriteFile": "true",
-        "encoding": "none",
-        "x": 940,
-        "y": 640,
-        "wires": [
-            [
-                "1563065ffcb81104"
             ]
         ]
     },
@@ -201,29 +179,182 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 340,
+        "y": 240,
         "wires": [
             [
-                "b7f1946e3c34936f"
+                "fbd8a70d937ba280"
             ]
         ],
         "icon": "font-awesome/fa-clock-o"
     },
     {
-        "id": "1563065ffcb81104",
+        "id": "b1806be8c319d3bb",
+        "type": "e-mail in",
+        "z": "014a1a96b302a816",
+        "name": "Prod email",
+        "protocol": "IMAP",
+        "server": "imap.gmail.com",
+        "useSSL": true,
+        "autotls": "never",
+        "port": "993",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "box": "INBOX",
+        "disposition": "Read",
+        "criteria": "UNSEEN",
+        "repeat": "60",
+        "fetch": "trigger",
+        "inputs": 1,
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "0852f9388ebd5f88"
+            ]
+        ]
+    },
+    {
+        "id": "18bdeb482edb0366",
+        "type": "postgresql",
+        "z": "014a1a96b302a816",
+        "name": "",
+        "query": "INSERT INTO Queue (from_addr, source, message) VALUES ($1, $2, $3)",
+        "postgreSQLConfig": "f6f7d7105f5398c6",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1290,
+        "y": 560,
+        "wires": [
+            [
+                "4ae18773295ff39c"
+            ]
+        ],
+        "inputLabels": [
+            "asdf"
+        ],
+        "outputLabels": [
+            "sdaf"
+        ]
+    },
+    {
+        "id": "0852f9388ebd5f88",
+        "type": "change",
+        "z": "014a1a96b302a816",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "src",
+                "pt": "msg",
+                "to": "prod_email",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 240,
+        "wires": [
+            [
+                "c2dc4ab21e48cf2f"
+            ]
+        ]
+    },
+    {
+        "id": "b9fdfac45f583858",
+        "type": "change",
+        "z": "014a1a96b302a816",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "src",
+                "pt": "msg",
+                "to": "test_email",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 420,
+        "wires": [
+            [
+                "c2dc4ab21e48cf2f"
+            ]
+        ]
+    },
+    {
+        "id": "3a206627d89b71e0",
+        "type": "change",
+        "z": "014a1a96b302a816",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "params",
+                "pt": "msg",
+                "to": "[]",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "params[0]",
+                "pt": "msg",
+                "to": "from",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "params[1]",
+                "pt": "msg",
+                "to": "src",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "params[2]",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1080,
+        "y": 560,
+        "wires": [
+            [
+                "18bdeb482edb0366"
+            ]
+        ]
+    },
+    {
+        "id": "4ae18773295ff39c",
         "type": "debug",
         "z": "014a1a96b302a816",
-        "name": "debug 6",
+        "name": "debug 2",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "pathToFile",
-        "targetType": "msg",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1120,
-        "y": 640,
+        "x": 1470,
+        "y": 560,
         "wires": []
     }
 ]
