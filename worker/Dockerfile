@@ -14,6 +14,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
+    libportaudio2 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements.txt
@@ -21,7 +22,10 @@ RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
 
 ADD pyrtty /pyrtty
 RUN pip install --break-system-packages -r /pyrtty/requirements.txt
+ENV PATH="/pyrtty:${PATH}"
 
 COPY . .
+
+RUN adduser root audio
 
 CMD ["python", "worker.py"]

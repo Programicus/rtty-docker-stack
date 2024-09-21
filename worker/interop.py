@@ -1,5 +1,7 @@
 import asyncio
 
+from pyrtty import pyrtty
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,13 +30,18 @@ async def process_row(conn, row, lock):
     global _mark_done
     global _mark_printing
     async with lock:
-        # Simulate processing the row
+        text = row['message']
         logger.info(f"Processing row: {row['source']}, {row['message']}")
         logger.info(row)
         await _mark_printing.fetch(row['timestamp'])
 
-        await asyncio.sleep(5)  # Simulate work
+        logger.info("generating baudot")
+        baudot = pyrtty.text_to_baudot(text)
+        logger.info("generating afsk")
+        afsk = pyrtty.baudot_to_afsk(baudot)
+        logger.info("generating playing")
+        pyrtty.play_afsk_signal(afsk)
 
         await _mark_done.fetch(row['timestamp'])
 
-        logger.info(f"Finished processing row: {row['source']}, {row['message']}")
+        logger.info(f"Finished processing row: {row['source']}")

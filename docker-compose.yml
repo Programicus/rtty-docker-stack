@@ -18,7 +18,9 @@ services:
 
   worker:
     build:
-      context: ./worker
+      context: worker
+      additional_contexts:
+        - hostetc=/etc
       args:
         POSTGRES_USER: ${POSTGRES_USER:-defaultuser}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
@@ -29,17 +31,16 @@ services:
         restart: true
     networks:
       - backend
+    devices:
+      - /dev/snd:/dev/snd
 
   node-red:
-    build:
-      additional_contexts:
-        hostetc: /etc
+    build: 
+      context: node-red
     ports:
       - "1880:1880"
     volumes:
       - ./data:/data
-    devices:
-      - /dev/snd:/dev/snd
     networks:
       - backend
       - frontend
@@ -54,7 +55,7 @@ services:
 
   web:
     build:
-      context: ./web
+      context: web
       args:
         POSTGRES_USER: ${POSTGRES_USER:-defaultuser}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
