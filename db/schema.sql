@@ -5,16 +5,10 @@ CREATE TYPE status_enum AS ENUM ('QUEUED', 'PRINTING', 'FINISHED');
 CREATE TABLE IF NOT EXISTS Queue (
     timestamp TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
     source VARCHAR(255),
+    from_addr VARCHAR(255),
     message TEXT,
     status status_enum DEFAULT 'QUEUED'
 );
-
--- Step 3: Create a SQL function that takes a source and message and creates a new row in Queue
-CREATE OR REPLACE FUNCTION add_to_queue(p_source VARCHAR, p_message TEXT) RETURNS VOID AS $$
-BEGIN
-    INSERT INTO Queue (source, message, status) VALUES (p_source, p_message, 'QUEUED');
-END;
-$$ LANGUAGE plpgsql;
 
 -- Step 4: Create a function to notify when a new row is added
 CREATE OR REPLACE FUNCTION notify_new_row() RETURNS trigger AS $$

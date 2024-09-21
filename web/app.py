@@ -47,7 +47,7 @@ def debug():
         
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO Queue (source, message, status) VALUES (%s, %s, %s)", (source, message, 'QUEUED'))
+        cursor.execute("INSERT INTO Queue (from_addr, source, message, status) VALUES (%s, %s, %s, %s)", (source, 'web_debug', message, 'QUEUED'))
         conn.commit()
         cursor.close()
         conn.close()

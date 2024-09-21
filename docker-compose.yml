@@ -41,7 +41,16 @@ services:
     devices:
       - /dev/snd:/dev/snd
     networks:
+      - backend
       - frontend
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-defaultuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-defaultdatabase}
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
 
   web:
     build:
