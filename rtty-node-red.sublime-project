@@ -13,7 +13,8 @@
     [
         {
             "name": "build",
-            "shell_cmd": "./sync-and-test.sh"
+            "shell_cmd": "$project_path/sync-and-test.sh",
+            "working_dir": "$project_path/"
         }
     ]
 }
