@@ -14,7 +14,8 @@ services:
       interval: 30s
       timeout: 60s
       retries: 5
-      start_period: 80s  
+      start_period: 80s 
+    restart: always
 
   worker:
     build:
@@ -33,6 +34,7 @@ services:
       - backend
     devices:
       - /dev/snd:/dev/snd
+    restart: always
 
   node-red:
     build: 
@@ -52,6 +54,7 @@ services:
       db:
         condition: service_healthy
         restart: true
+    restart: always
 
   web:
     build:
@@ -71,6 +74,7 @@ services:
     networks:
       - frontend
       - backend
+    restart: always
 
 networks:
   frontend:
