@@ -36,6 +36,26 @@ services:
       - /dev/snd:/dev/snd
     restart: always
 
+#  mqtt:
+#    build:
+#      context: mqtt
+#      args:
+#        MQTT_BROKER: ${MQTT_BROKER:-example.com}
+#        MQTT_TOPIC: ${MQTT_TOPIC:-rtty}
+#        MQTT_USER: ${MQTT_USER:-defaultuser}
+#        MQTT_PASSWORD: ${MQTT_PASSWORD:-defaultpassword}
+#        POSTGRES_USER: ${POSTGRES_USER:-defaultuser}
+#        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
+#        POSTGRES_DB: ${POSTGRES_DB:-defaultdatabase}
+#
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#        restart: true
+#    networks:
+#      - backend
+#    restart: always
+
   node-red:
     build: 
       context: node-red
