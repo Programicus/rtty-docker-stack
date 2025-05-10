@@ -14,6 +14,19 @@ logger.setLevel(logging.INFO)
 
 queued_count = 0
 
+FOXTEST = ''
+
+async def listen_for_foxtest(conn):
+    async def foxtest_changed(*args):
+        global FOXTEST
+        row = await conn.fetch("SELECT foxtest_message FROM FOXTEST")
+        if len(row) > 0:
+            FOXTEST = row[0]['foxtest_message']
+        else:
+            FOXTEST = ''
+    await conn.add_listener('toggle_foxtest', foxtest_changed)
+
+
 async def listen_for_notifications(conn, queued_count):
     def increment_queued_count(*args):
         global queued_count
@@ -96,13 +109,16 @@ async def main():
 
         # Then set up the listener for new rows
         await listen_for_notifications(conn, queued_count)
+        await listen_for_foxtest(conn)
 
         while True:
+            await asyncio.sleep(1)
+            if FOXTEST:
+                await interop.print_msg(FOXTEST, lock)
+                continue
             if queued_count > 0:
                 await process_row(conn, lock)
                 queued_count -= 1
-            else:
-                await asyncio.sleep(1)
     except asyncio.CancelledError:
         logger.warn("Worker has been cancelled")
     finally:

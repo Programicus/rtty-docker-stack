@@ -23,3 +23,30 @@ CREATE TRIGGER notify_new_row_trigger
 AFTER INSERT ON Queue
 FOR EACH ROW
 EXECUTE FUNCTION notify_new_row();
+
+
+CREATE TABLE IF NOT EXISTS FOXTEST(
+    foxtest_message VARCHAR(255),
+
+
+    Lock char(1) not null DEFAULT 'X',
+    constraint PK_T1 PRIMARY KEY (Lock),
+    constraint CK_T1_Locked CHECK (Lock='X')
+);
+
+CREATE OR REPLACE FUNCTION notify_toggle_foxtest() RETURNS trigger AS $$
+BEGIN
+    PERFORM pg_notify('toggle_foxtest', '');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER trg_foxtest_insert
+AFTER INSERT ON FOXTEST
+FOR EACH ROW 
+EXECUTE FUNCTION notify_toggle_foxtest();
+
+CREATE OR REPLACE TRIGGER trg_foxtest_delete
+AFTER DELETE ON FOXTEST
+FOR EACH ROW
+EXECUTE FUNCTION notify_toggle_foxtest();

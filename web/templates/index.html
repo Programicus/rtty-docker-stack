@@ -3,9 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .status {
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        .enabled {
+            color: white;
+            background-color: #4CAF50;
+        }
+        .disabled {
+            color: white;
+            background-color: #F44336;
+        }
+    </style>
   <title>Queue Entries</title>
 </head>
 <body>
+  <div class="container">
+    <div class="status {% if foxtest_running %}enabled{% else %}disabled{% endif %}">
+      Foxtest queing is {% if foxtest_running %}enabled {% else %}disabled{% endif %}
+    </div>
+    <div class="buttons">
+      <form action="{{ url_for('foxtest') }}" method="post">
+        <input type="hidden" name="action" value="enable">
+        <button type="submit" class="enable-btn" {% if foxtest_running %}disabled{% endif %}>
+            Enable Foxtest
+        </button>
+        <input type="text" name="foxtest" value="{{foxtest_msg|default('The quick brown fox jumps over the lazy dog 1234567980', True)}}" size="70" required {% if foxtest_running %}disabled{% endif %}>
+      </form>
+
+      <form action="{{ url_for('foxtest') }}" method="post">
+        <input type="hidden" name="action" value="disable">
+        <button type="submit" class="disable-btn" {% if not foxtest_running %}disabled{% endif %}>
+            Disable Foxtest
+        </button>
+      </form>
+    </div>
+
+  </div>
   <h1>Queue Entries</h1>
   <form action="{{ url_for('debug') }}" method="post">
     <label for="source">Source:</label>
