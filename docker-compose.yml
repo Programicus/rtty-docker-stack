@@ -11,10 +11,10 @@ services:
       - backend
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 30s
+      interval: 10s
       timeout: 60s
-      retries: 5
-      start_period: 80s 
+      retries: 15
+      start_period: 30s 
     restart: always
 
   worker:
