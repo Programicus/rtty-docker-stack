@@ -20,8 +20,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt requirements.txt
 RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
 
-ADD pyrtty /pyrtty
+RUN mkdir /pyrtty
+COPY pyrtty/requirements.txt /pyrtty/requirements.txt
 RUN pip install --break-system-packages -r /pyrtty/requirements.txt
+
+ADD pyrtty /pyrtty
 ENV PATH="/pyrtty:${PATH}"
 
 COPY . .
